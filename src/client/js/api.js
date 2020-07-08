@@ -1,3 +1,18 @@
+async function getCoordinates(zip, placeName) {
+  const endpoint = `${GEO_API_URL}/postalCodeSearchJSON?username=${GEO_API_USER}&postalcode=${zip}&placename=${placeName}`;
+  return get(endpoint);
+}
+
+async function getWeatherCurrent(lat, lon) {
+  const endpoint = `${WEATHER_API_URL}/current?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
+  return get(endpoint);
+}
+
+async function getWeatherForecast(lat, lon, date) {
+  const endpoint = `${WEATHER_API_URL}/forecast/daily?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}&days=16`;
+  return get(endpoint);
+}
+
 async function post(path, object) {
   const response = await fetch(path, {
     method: "POST",
@@ -25,3 +40,5 @@ async function get(path) {
   const data = await response.json();
   return data;
 }
+
+export { getCoordinates, getWeatherCurrent, getWeatherForecast };
