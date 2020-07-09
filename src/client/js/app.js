@@ -1,4 +1,6 @@
-import { getCoordinates, getWeatherCurrent, getWeatherForecast } from "./api";
+import * as moment from "moment";
+
+import { getCoordinates, getWeather } from "./api";
 
 async function handleSubmit(event) {
   event.preventDefault();
@@ -26,16 +28,14 @@ async function handleSubmit(event) {
       name: selectedPlace.placeName,
       zip: selectedPlace.postalCode,
       lat: selectedPlace.lat,
-      lng: selectedPlace.lng,
+      lon: selectedPlace.lng,
     };
 
     console.log("place:", place);
 
-    const weatherCurrent = await getWeatherCurrent(place.lat, place.lng);
-    console.log("weather current: ", weatherCurrent.data);
-
-    const weatherForecast = await getWeatherForecast(place.lat, place.lng);
-    console.log("weather forecast: ", weatherForecast.data);
+    const tripDate = moment(date);
+    const weather = await getWeather(place.lat, place.lon, tripDate);
+    console.log("weather forecast/current: ", weather);
 
     // TODO
     // sending requests

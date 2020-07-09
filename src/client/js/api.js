@@ -1,4 +1,5 @@
 import { secrets } from "./secrets";
+import * as moment from "moment";
 
 const { GEO_API_URL, GEO_API_USER, WEATHER_API_URL, WEATHER_API_KEY } = secrets;
 
@@ -7,14 +8,33 @@ async function getCoordinates(zip, placeName) {
   return get(endpoint);
 }
 
+async function getWeather(lat, lon, date) {
+  const today = moment.now();
+  if (date.diff(today, "days") < 7) {
+    return getWeatherCurrent(lat, lon);
+  }
+  return getWeatherForecast(lat, lon, date);
+}
+
 async function getWeatherCurrent(lat, lon) {
   const endpoint = `${WEATHER_API_URL}/current?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
   return get(endpoint);
 }
 
-async function getWeatherForecast(lat, lon, date) {
+async function getWeatherForecast(lat, lon, tripDate) {
   const endpoint = `${WEATHER_API_URL}/forecast/daily?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}&days=16`;
-  return get(endpoint);
+  return new Promise((resolve, reject) => {
+    get(endpoint).then((response) => {
+      const relevantForecast = response.data.filter((element) => {
+        return moment(element.datetime, "YYYY-MM-DD").diff(tripDate, 'days') === 0;
+      });
+      if (relevantForecast.length === 1) {
+        resolve(...relevantForecast);
+      } else {
+        reject("No forecast found!");
+      }
+    });
+  });
 }
 
 async function post(path, object) {
@@ -45,4 +65,4 @@ async function get(path) {
   return data;
 }
 
-export { getCoordinates, getWeatherCurrent, getWeatherForecast };
+export { getCoordinates, getWeather };
