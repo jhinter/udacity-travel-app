@@ -7,6 +7,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const port = process.env.PORT;
 
+// store
+const trips = [];
+
 // express backend
 const app = express();
 
@@ -19,9 +22,28 @@ app.use(cors());
 app.use(express.static("dist"));
 
 // controllers
-// TODO
+app.post("/trips/", async (req, res) => {
+  console.log(req.body);
+  if (true) {
+    const trip = {id: guid(), ...req.body};
+    trips.push(trip);
+    res.json(trip);
+  } else {
+    res
+      .status(422)
+      .send("Missing parameters: Please provide a valid trip!");
+  }
+});
+
+app.get("/trips/", async (req, res) => {
+  res.json(trips);
+});
 
 // server
 app.listen(port, function () {
   console.log(`Travel app is listening on port ${port}!`);
 });
+
+function guid() {
+  return Math.random().toString(36).substring(2) + Date.now().toString(36)
+}

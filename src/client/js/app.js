@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import lookup from "country-code-lookup";
-import { getCoordinates, getWeather, getPhoto } from "./api";
+import { getCoordinates, getWeather, getPhoto, saveTrip, getTrips, postTrip } from "./api";
 
 async function handleSubmit(event) {
   event.preventDefault();
@@ -43,6 +43,11 @@ async function handleSubmit(event) {
     const photo = await getPhoto(trip);
     console.log(photo);
 
+    trip.photo = photo;
+
+    const savedTrip = await postTrip(trip);
+    
+    await updateUI();
     // TODO
     // sending requests
     // updating ui
@@ -56,8 +61,9 @@ function validateForm() {
   return true;
 }
 
-function updateUI() {
-  // TODO
+async function updateUI() {
+  const trips = await getTrips();
+  console.log('updateUI: ', trips);
 }
 
 function showOptions(places) {

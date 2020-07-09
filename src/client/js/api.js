@@ -83,6 +83,16 @@ export async function getPhoto(trip) {
   });
 }
 
+export async function getTrips() {
+  const endpoint = `/trips`;
+  return get(endpoint);
+}
+
+export async function postTrip(trip) {
+  const endpoint = `/trips`;
+  return post(endpoint, trip);
+}
+
 async function post(path, object) {
   const response = await fetch(path, {
     method: "POST",
