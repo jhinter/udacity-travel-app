@@ -1,0 +1,24 @@
+// mobile first
+$media-direction: min;
+
+$breakpoints: (
+  "default": "",
+  "xs": 480px,
+  "sm": 667px,
+  "md": 1024px,
+  "lg": 1280px,
+  "xl": 1680px,
+);
+
+@mixin breakpoint($breakpoint, $direction: $media-direction) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (#{$direction}-width: #{map-get($breakpoints, $breakpoint)}) {
+      @content;
+    }
+  } @else if unitless($breakpoint) {
+    $breakpoint: $breakpoint + 0px;
+    @media (#{$direction}-width: $breakpoint) {
+      @content;
+    }
+  }
+}

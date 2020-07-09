@@ -1,0 +1,44 @@
+* {
+  font-family: "Roboto", Verdana, "Geneva", sans-serif;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: #095599;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.7em;
+}
+
+h3 {
+  font-size: 1.5em;
+}
+
+h4 {
+  font-size: 1.2em;
+}
+
+a,
+a:visited {
+  color: #095599;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #0072d6;
+  text-decoration: none;
+}
+
+cite {
+  color: #095599;
+  text-decoration: wavy;
+}
