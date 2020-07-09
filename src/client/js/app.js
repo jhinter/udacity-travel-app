@@ -1,7 +1,4 @@
 import { getCoordinates, getWeatherCurrent, getWeatherForecast } from "./api";
-import { secrets } from "./secrets";
-
-const { GEO_API_URL, GEO_API_USER, WEATHER_API_URL, WEATHER_API_KEY } = secrets;
 
 async function handleSubmit(event) {
   event.preventDefault();

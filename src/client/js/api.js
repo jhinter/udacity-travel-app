@@ -1,3 +1,7 @@
+import { secrets } from "./secrets";
+
+const { GEO_API_URL, GEO_API_USER, WEATHER_API_URL, WEATHER_API_KEY } = secrets;
+
 async function getCoordinates(zip, placeName) {
   const endpoint = `${GEO_API_URL}/postalCodeSearchJSON?username=${GEO_API_USER}&postalcode=${zip}&placename=${placeName}`;
   return get(endpoint);
