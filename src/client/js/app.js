@@ -1,6 +1,6 @@
 import * as moment from "moment";
-
-import { getCoordinates, getWeather } from "./api";
+import lookup from "country-code-lookup";
+import { getCoordinates, getWeather, getPhoto } from "./api";
 
 async function handleSubmit(event) {
   event.preventDefault();
@@ -12,10 +12,10 @@ async function handleSubmit(event) {
 
   try {
     const zip = form.querySelector("#zip").value;
-    const placeName = form.querySelector("#place-name").value;
+    const city = form.querySelector("#place-name").value;
     const date = form.querySelector("#date").value;
 
-    const potentialPlaces = await getCoordinates(zip, placeName);
+    const potentialPlaces = await getCoordinates(city, zip);
     if (potentialPlaces.postalCodes.length > 1) {
       showOptions(potentialPlaces.postalCodes);
       console.log("Attention: more than 1 hit!");
@@ -24,18 +24,24 @@ async function handleSubmit(event) {
 
     // for now
     const selectedPlace = potentialPlaces.postalCodes[0];
-    const place = {
-      name: selectedPlace.placeName,
-      zip: selectedPlace.postalCode,
-      lat: selectedPlace.lat,
-      lon: selectedPlace.lng,
-    };
 
-    console.log("place:", place);
+    const trip = {
+      destination: {
+        city: selectedPlace.placeName,
+        zip: selectedPlace.postalCode,
+        country: lookup.byIso(selectedPlace.countryCode).country,
+        lat: selectedPlace.lat,
+        lon: selectedPlace.lng,
+      },
+      date: moment(date)
+    }
+    console.log("place:", trip.destination);
 
-    const tripDate = moment(date);
-    const weather = await getWeather(place.lat, place.lon, tripDate);
+    const weather = await getWeather(trip);
     console.log("weather forecast/current: ", weather);
+
+    const photo = await getPhoto(trip);
+    console.log(photo);
 
     // TODO
     // sending requests
