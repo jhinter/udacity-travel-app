@@ -1,0 +1,55 @@
+#planner {
+  background: $default-dark;
+}
+
+#form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2em 1em;
+
+  @include breakpoint("sm") {
+    max-width: 1000px;
+    margin: auto;
+    padding: 2em 2em;
+  }
+}
+
+.input-list {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+
+  @include breakpoint("sm") {
+    width: unset;
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+    color: $default-bright;
+
+    input[type="text"],
+    input[type="date"] {
+      background-color: transparent;
+      border: unset;
+      border-bottom: 1px solid $default-bright;
+      color: $primary;
+
+      &::placeholder {
+        color: $primary;
+      }
+
+      @include breakpoint("sm") {
+        margin-left: 10px;
+        width: 200px;
+      }
+    }
+    @include breakpoint("sm") {
+      flex-direction: row;
+      justify-content: flex-end;
+      width: unset;
+    }
+  }
+}

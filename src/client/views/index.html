@@ -16,70 +16,55 @@
       </a>
       <ul class="navbar">
         <li>
-          <a href="/">Plan</a>
+          <a href="#planner">Plan</a>
         </li>
         <li>
-          <a href="/trip.html">My trip</a>
+          <a href="#trips">My trips</a>
         </li>
       </ul>
     </header>
 
-
-
     <div class="page-wrapper">
       <main class="page-content">
-        <h1>Travel Planner</h1>
-        
-        <section id="trips">
-          <h2>My trips</h2>
-        </section>
         <section id="planner">
-
-            <form id="form">
-              <ul class="input-list">
-                <li>
-                  <label for="place-name">My trip to (city):</label
-                    ><input
-                      type="text"
-                      id="place-name"
-                      placeholder="Please enter your city"
-                    />
-                </li>
-                <li>
-                  <label for="zip">My trip to (zip):</label>
-              <input
-                type="text"
-                id="zip"
-                placeholder="Please enter your zip code"
-              />
-                </li>
-                <li>
-                  <label for="date">Departing:</label>Departing<input
+          <form id="form">
+            <h1>Add your trip</h1>
+            <ul class="input-list">
+              <li>
+                <label for="place-name">Which city are you visiting?</label
+                  ><input
+                    type="text"
+                    id="place-name"
+                    placeholder="Please enter your city"
+                  />
+              </li>
+              <li>
+                <label for="zip">What's the zip code?</label>
+                <input
+                  type="text"
+                  id="zip"
+                  placeholder="Please enter your zip code"
+                />
+              </li>
+              <li>
+                <label for="date">When are you leaving?</label>
+                <input
                   type="date"
                   id="date"
                   placeholder="When are you leaving?"
                 />
-                </li>
-                <li>
-                  <input type="submit" value="submit" />
-                </li>
-              </ul>
-            </form>
-          </div>
-
+              </li>
+              <li>
+                <input class="btn" type="submit" value="Add it!" />
+              </li>
+            </ul>
+          </form>
         </section>
-
+        <section id="trips">
+          <h1>My trips</h1>
+        </section>
+        </div>
       </main>
     </div>
-    <footer>
-      <ul class="navbar">
-        <li>
-          <a href="/">Plan</a>
-        </li>
-        <li>
-          <a href="/trip.html">My trip</a>
-        </li>
-      </ul>
-    </footer>
   </body>
 </html>

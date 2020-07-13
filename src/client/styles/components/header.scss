@@ -3,8 +3,17 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: #d1d1d1;
+  background: $secondary;
   padding: 8px;
+
+  a,
+  a:visited {
+    text-transform: uppercase;
+    color: $default-bright;
+  }
+  a:hover {
+    color: $primary;
+  }
 
   .header-logo {
     font-weight: 700;
@@ -12,7 +21,7 @@ header {
     margin: 0.5em;
   }
 
-  @include breakpoint('sm') {
+  @include breakpoint("sm") {
     display: flex;
     flex-direction: row;
     justify-content: space-between;

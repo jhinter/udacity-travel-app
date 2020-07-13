@@ -1,0 +1,24 @@
+.btn {
+  cursor: pointer;
+  border-radius: 30px;
+  padding: 8px 18px;
+  font-weight: 600;
+  background-color: transparent;
+  transition: all 0.2s ease-out;
+  border: 2px solid $primary;
+  color: $primary;
+
+  &:hover {
+    background-color: $primary;
+    color: black;
+  }
+
+  &.dark {
+    border: 2px solid $default-dark;
+    color: $default-dark;
+    &:hover {
+      background-color: $default-dark;
+      color: $default-bright;
+    }
+  }
+}
