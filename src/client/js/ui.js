@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import { getTrips } from "./api-internal";
+import { getTrips } from "./api/api-internal";
 
 async function updateUI() {
   const trips = await getTrips();

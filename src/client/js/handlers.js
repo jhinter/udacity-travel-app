@@ -1,8 +1,7 @@
 import * as moment from "moment";
 import lookup from "country-code-lookup";
-import { validateForm } from "./helpers";
-import { getCoordinates, getWeather, getPhoto } from "./api-external";
-import { postTrip, deleteTrip } from "./api-internal";
+import { getCoordinates, getWeather, getPhoto } from "./api/api-external";
+import { postTrip, deleteTrip } from "./api/api-internal";
 import { updateUI } from "./ui";
 
 async function handleSubmit(event) {
@@ -66,6 +65,10 @@ async function handleDelete() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function validateForm() {
+    return true;
 }
 
 export { handleSubmit, handleDelete };
