@@ -21,8 +21,12 @@ async function getWeather(trip) {
   const { lat, lon } = trip.destination;
 
   const today = moment.now();
+  
+  if (date.diff(today, "days") > 16) {
+    throw new Error('Sorry, but we do not have forecasts for >=16 days in the future!');
+  }
 
-  if (date.diff(today, "days") < 7) {
+  if (date.diff(today, "days") <= 7) {
     return getWeatherCurrent(lat, lon);
   }
 
@@ -32,7 +36,15 @@ async function getWeather(trip) {
 // fetches current weather for a given location
 async function getWeatherCurrent(lat, lon) {
   const endpoint = `${WEATHER_API_URL}/current?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
-  return getRequest(endpoint);
+  return new Promise((resolve, reject) => {
+    getRequest(endpoint).then((response) => {
+      if (response.data.length === 1) {
+        resolve(...response.data);
+      } else {
+        reject(new Error("Invalid response from weather API!"));
+      }
+    });
+  });
 }
 
 // fetches weather forecast for the next 16 days
@@ -48,7 +60,7 @@ async function getWeatherForecast(lat, lon, tripDate) {
       if (relevantForecast.length === 1) {
         resolve(...relevantForecast);
       } else {
-        reject("No forecast found!");
+        reject(new Error("No forecast found!"));
       }
     });
   });
