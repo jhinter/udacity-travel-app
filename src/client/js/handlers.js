@@ -53,7 +53,7 @@ async function handleSubmit(event) {
     // rendering changes
     await updateUI();
   } catch (error) {
-    alert("Error while requesting new trip information: ", error);
+    alert("Error while requesting new trip information: " + error);
   }
 }
 
