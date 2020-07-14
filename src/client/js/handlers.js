@@ -7,68 +7,69 @@ import { updateUI } from "./ui";
 async function handleSubmit(event) {
   event.preventDefault();
 
-  if (!validateForm()) {
+  const userInput = {
+    zip: form.querySelector("#zip").value,
+    city: form.querySelector("#place-name").value,
+    date: form.querySelector("#date").value,
+  };
+
+  if (!validateForm(userInput)) {
     alert("Attention: Your Input isn't valid!");
     return;
   }
 
   try {
-    const zip = form.querySelector("#zip").value;
-    const city = form.querySelector("#place-name").value;
-    const date = form.querySelector("#date").value;
-
-    const potentialPlaces = await getCoordinates(city, zip);
-    if (potentialPlaces.postalCodes.length > 1) {
-      console.log("Attention: more than 1 hit!");
-      // return;
+    const potentialPlaces = await getCoordinates(userInput.city, userInput.zip);
+    if (potentialPlaces.postalCodes.length === 0) {
+      throw new Error("Place not found!");
     }
-
-    // for now
-    const selectedPlace = potentialPlaces.postalCodes[0];
+    if (potentialPlaces.postalCodes.length > 1) {
+      throw new Error(
+        "There is more then 1 hit for your destination. Please be more specific!"
+      );
+    }
+    const destination = potentialPlaces.postalCodes[0];
 
     const trip = {
       destination: {
-        city: selectedPlace.placeName,
-        zip: selectedPlace.postalCode,
-        country: lookup.byIso(selectedPlace.countryCode).country,
-        lat: selectedPlace.lat,
-        lon: selectedPlace.lng,
+        city: destination.placeName,
+        zip: destination.postalCode,
+        country: lookup.byIso(destination.countryCode).country,
+        lat: destination.lat,
+        lon: destination.lng,
       },
-      date: moment(date),
+      date: moment(userInput.date),
     };
-    console.log("place:", trip.destination);
 
+    // fetching weather and photo
     const weather = await getWeather(trip);
-    console.log("weather forecast/current: ", weather);
-
     const photo = await getPhoto(trip);
-    console.log(photo);
 
     trip.photo = photo;
     trip.weather = weather;
 
-    const savedTrip = await postTrip(trip);
+    // saving trip
+    await postTrip(trip);
 
+    // rendering changes
     await updateUI();
   } catch (error) {
-    console.log(error);
+    alert("Error while requesting new trip information: ", error);
   }
 }
 
 async function handleDelete() {
-  console.log(event.target);
   const id = event.target.getAttribute("data-trip-id");
-
   try {
-    const result = await deleteTrip(id);
-    updateUI();
+    await deleteTrip(id);
+    await updateUI();
   } catch (error) {
-    console.log(error);
+    alert("Trip could not be deleted!");
   }
 }
 
-function validateForm() {
-    return true;
+function validateForm(userInput) {
+  return userInput.city && userInput.zip && userInput.date;
 }
 
 export { handleSubmit, handleDelete };
