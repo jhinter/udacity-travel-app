@@ -1,5 +1,6 @@
 import { secrets } from "./secrets";
 import * as moment from "moment";
+import { getRequest } from "./base-requests";
 
 const {
   GEO_API_URL,
@@ -10,12 +11,12 @@ const {
   PIXA_API_KEY,
 } = secrets;
 
-export async function getCoordinates(city, zip) {
+async function getCoordinates(city, zip) {
   const endpoint = `${GEO_API_URL}/postalCodeSearchJSON?username=${GEO_API_USER}&postalcode=${zip}&placename=${city}`;
   return getRequest(endpoint);
 }
 
-export async function getWeather(trip) {
+async function getWeather(trip) {
   const { date } = trip;
   const { lat, lon } = trip.destination;
 
@@ -53,7 +54,7 @@ async function getWeatherForecast(lat, lon, tripDate) {
   });
 }
 
-export async function getPhoto(trip) {
+async function getPhoto(trip) {
   const { destination } = trip;
   const baseUrl = `${PIXA_API_URL}/?key=${PIXA_API_KEY}`;
 
@@ -83,58 +84,4 @@ export async function getPhoto(trip) {
   });
 }
 
-export async function getTrips() {
-  const endpoint = `/trips`;
-  return getRequest(endpoint);
-}
-
-export async function postTrip(trip) {
-  const endpoint = `/trips`;
-  return postRequest(endpoint, trip);
-}
-
-export async function deleteTrip(id) {
-  const endpoint = `/trips`;
-  return deleteRequest(endpoint, id);
-}
-
-async function postRequest(path, object) {
-  const response = await fetch(path, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(object),
-  });
-  if (response.status !== 200) {
-    throw new Error("Error!");
-  }
-  const data = await response.json();
-  return data;
-}
-
-async function getRequest(path) {
-  const response = await fetch(path, {
-    method: "GET",
-    credentials: "same-origin",
-  });
-  if (response.status !== 200) {
-    throw new Error("Error!");
-  }
-  const data = await response.json();
-  return data;
-}
-
-async function deleteRequest(path, id) {
-  const response = await fetch(`${path}/${id}`, {
-    method: "DELETE",
-    credentials: "same-origin",
-  });
-  if (response.status !== 200) {
-    throw new Error("Error!");
-  }
-  const data = await response.json();
-  return data;
-}
-
+export { getCoordinates, getWeather, getPhoto };
