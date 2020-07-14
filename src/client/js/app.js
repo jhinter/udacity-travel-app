@@ -1,6 +1,14 @@
 import * as moment from "moment";
 import lookup from "country-code-lookup";
-import { getCoordinates, getWeather, getPhoto, saveTrip, getTrips, postTrip } from "./api";
+import {
+  getCoordinates,
+  getWeather,
+  getPhoto,
+  saveTrip,
+  getTrips,
+  postTrip,
+  deleteTrip,
+} from "./api";
 
 async function handleSubmit(event) {
   event.preventDefault();
@@ -33,8 +41,8 @@ async function handleSubmit(event) {
         lat: selectedPlace.lat,
         lon: selectedPlace.lng,
       },
-      date: moment(date)
-    }
+      date: moment(date),
+    };
     console.log("place:", trip.destination);
 
     const weather = await getWeather(trip);
@@ -47,9 +55,8 @@ async function handleSubmit(event) {
     trip.weather = weather;
 
     const savedTrip = await postTrip(trip);
-    
-    await updateUI();
 
+    await updateUI();
   } catch (error) {
     console.log(error);
   }
@@ -60,38 +67,31 @@ function validateForm() {
   return true;
 }
 
-
 updateUI();
 
 async function updateUI() {
   const trips = await getTrips();
-
+  const tripsSection = document.querySelector("#trips");
+  tripsSection.innerHTML = "";
   trips.forEach((trip) => {
-    const tripsSection = document.querySelector('#trips');
-    tripsSection.appendChild(createTripCard(trip))
-  })
-  console.log('updateUI: ', trips);
-
-
+    tripsSection.appendChild(createTripCard(trip));
+  });
 }
 
 function createTripCard(trip) {
-  const card = document.createElement('article');
-  card.classList.add('trip');
+  const card = document.createElement("article");
+  card.classList.add("trip");
   card.innerHTML = `
     <div class="trip-cover" style="background-image: url(${trip.photo})"></div>
     <div class="trip-body">
-      <div class="card-header">
-        <h2>My trip to: ${trip.destination.city}, ${trip.destination.country}</h2>
-        <h3>Departing: ${moment(trip.date).format('MM/DD/YYYY')}</h3>
-      </div>
-      <div class="card-actions">
-        <button>remove trip</button>
-      </div>
-      <div class="card-content">
+        <h3>My trip to: ${trip.destination.city}, ${trip.destination.country}</h3>
+        <h4>Departing: ${moment(trip.date).format("MM/DD/YYYY")}</h4>
+        <button class="btn dark" data-trip-id="${
+          trip.id
+        }">remove trip</button>
         <p>
           Your trip to ${trip.destination.city}, ${trip.destination.country}
-          is ${moment(trip.date).diff(moment.now(), 'days')} days away.
+          is ${moment(trip.date).diff(moment.now(), "days")} days away.
         </p>
         <p>
           Typical weather for then is:<br />
@@ -100,12 +100,13 @@ function createTripCard(trip) {
           </span>
         </p>
         <p class="weather-info">
-        <img height="40" width="40" src="https://www.weatherbit.io/static/img/icons/${trip.weather.weather.icon}.png">
+        <img height="40" width="40" src="https://www.weatherbit.io/static/img/icons/${
+          trip.weather.weather.icon
+        }.png">
           <span>
           ${trip.weather.weather.description}
           </span>
         </p>
-      </div>
     </div>
   `;
   return card;
@@ -113,4 +114,17 @@ function createTripCard(trip) {
 function showOptions(places) {
   // [{"adminCode2":"091","adminCode3":"09162","adminName3":"Kreisfreie Stadt München","adminCode1":"BY","adminName2":"Upper Bavaria","lng":11.5898666666667,"countryCode":"DE","postalCode":"81539","adminName1":"Bayern","ISO3166-2":"BY","placeName":"München","lat":48.1102333333333}]}
 }
-export { handleSubmit };
+
+async function handleDelete() {
+  console.log(event.target);
+  const id = event.target.getAttribute("data-trip-id");
+
+  try {
+    const result = await deleteTrip(id);
+    updateUI();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { handleSubmit, handleDelete };

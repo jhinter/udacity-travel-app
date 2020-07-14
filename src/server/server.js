@@ -8,7 +8,7 @@ dotenv.config();
 const port = process.env.PORT;
 
 // store
-const trips = [];
+let trips = [];
 
 // express backend
 const app = express();
@@ -22,21 +22,31 @@ app.use(cors());
 app.use(express.static("dist"));
 
 // controllers
+// for getting all stored trips
+app.get("/trips/", async (req, res) => {
+  res.json(trips);
+});
+// for saving a new trip
 app.post("/trips/", async (req, res) => {
-  console.log(req.body);
-  if (true) {
-    const trip = {id: guid(), ...req.body};
+  const newTrip = req.body;
+  if (newTrip.destination && newTrip.date && newTrip.weather && newTrip.photo) {
+    const trip = { id: guid(), ...req.body };
     trips.push(trip);
     res.json(trip);
   } else {
-    res
-      .status(422)
-      .send("Missing parameters: Please provide a valid trip!");
+    res.status(422).send("Missing parameters: Please provide valid data!");
   }
 });
-
-app.get("/trips/", async (req, res) => {
-  res.json(trips);
+// for deleting a saved trip
+app.delete("/trips/:id", async (req, res) => {
+  const id = req.params.id;
+  const index = trips.findIndex((trip) => trip.id === id);
+  if (index !== -1) {
+    trips = trips.filter((trip) => trip.id !== id);
+    res.status(200).json({ data: { msg: "Trip deleted successfully!" } });
+  } else {
+    res.status(404).json({ data: { msg: "Trip not found!", error: true } });
+  }
 });
 
 // server
@@ -45,5 +55,5 @@ app.listen(port, function () {
 });
 
 function guid() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36)
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }

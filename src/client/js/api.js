@@ -12,7 +12,7 @@ const {
 
 export async function getCoordinates(city, zip) {
   const endpoint = `${GEO_API_URL}/postalCodeSearchJSON?username=${GEO_API_USER}&postalcode=${zip}&placename=${city}`;
-  return get(endpoint);
+  return getRequest(endpoint);
 }
 
 export async function getWeather(trip) {
@@ -31,14 +31,14 @@ export async function getWeather(trip) {
 // fetches current weather for a given location
 async function getWeatherCurrent(lat, lon) {
   const endpoint = `${WEATHER_API_URL}/current?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
-  return get(endpoint);
+  return getRequest(endpoint);
 }
 
 // fetches weather forecast for the next 16 days
 async function getWeatherForecast(lat, lon, tripDate) {
   const endpoint = `${WEATHER_API_URL}/forecast/daily?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}&days=16`;
   return new Promise((resolve, reject) => {
-    get(endpoint).then((response) => {
+    getRequest(endpoint).then((response) => {
       const relevantForecast = response.data.filter((element) => {
         return (
           moment(element.datetime, "YYYY-MM-DD").diff(tripDate, "days") === 0
@@ -61,14 +61,14 @@ export async function getPhoto(trip) {
   let endpoint = `${baseUrl}&q=${encodedQuery}`;
 
   return new Promise((resolve) => {
-    get(endpoint).then((response) => {
+    getRequest(endpoint).then((response) => {
       if (response.hits.length > 0) {
         resolve(response.hits[0].largeImageURL);
       } else {
         // falling back on country image
         encodedQuery = encodeURI(destination.country);
         endpoint = `${baseUrl}&q=${encodedQuery}`;
-        get(endpoint).then((response) => {
+        getRequest(endpoint).then((response) => {
           if (response.hits.length > 0) {
             resolve(response.hits[0].largeImageURL);
           } else {
@@ -85,15 +85,20 @@ export async function getPhoto(trip) {
 
 export async function getTrips() {
   const endpoint = `/trips`;
-  return get(endpoint);
+  return getRequest(endpoint);
 }
 
 export async function postTrip(trip) {
   const endpoint = `/trips`;
-  return post(endpoint, trip);
+  return postRequest(endpoint, trip);
 }
 
-async function post(path, object) {
+export async function deleteTrip(id) {
+  const endpoint = `/trips`;
+  return deleteRequest(endpoint, id);
+}
+
+async function postRequest(path, object) {
   const response = await fetch(path, {
     method: "POST",
     credentials: "same-origin",
@@ -109,7 +114,7 @@ async function post(path, object) {
   return data;
 }
 
-async function get(path) {
+async function getRequest(path) {
   const response = await fetch(path, {
     method: "GET",
     credentials: "same-origin",
@@ -120,3 +125,16 @@ async function get(path) {
   const data = await response.json();
   return data;
 }
+
+async function deleteRequest(path, id) {
+  const response = await fetch(`${path}/${id}`, {
+    method: "DELETE",
+    credentials: "same-origin",
+  });
+  if (response.status !== 200) {
+    throw new Error("Error!");
+  }
+  const data = await response.json();
+  return data;
+}
+
