@@ -13,12 +13,11 @@ async function handleSubmit(event) {
     date: form.querySelector("#date").value,
   };
 
-  if (!validateForm(userInput)) {
-    alert("Attention: Your Input isn't valid!");
-    return;
-  }
-
   try {
+
+    if (!validateForm(userInput)) {
+      throw new Error("Attention: Your Input isn't valid!");
+    }
     const potentialPlaces = await getCoordinates(userInput.city, userInput.zip);
     if (potentialPlaces.postalCodes.length === 0) {
       throw new Error("Place not found!");
@@ -72,4 +71,4 @@ function validateForm(userInput) {
   return userInput.city && userInput.zip && userInput.date;
 }
 
-export { handleSubmit, handleDelete };
+export { handleSubmit, handleDelete, validateForm };
