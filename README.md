@@ -13,6 +13,9 @@ This app helps you plan your next trip. Just enter your destination an date of d
 ## How to build?
 - ```yarn build```
 
+## How to run production build locally?
+- ```yarn build && yarn start```
+
 ## How to run tests?
 - Backend:  ```yarn test-be```
 - Frontend: ```yarn test-fe```
